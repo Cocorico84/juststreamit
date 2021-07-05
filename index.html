@@ -8,18 +8,57 @@
 
     <body>
         <div class="navbar">
+            <span class="title">JustStreamIt</span>
             <ul>
                 <li><a href="home">Home</a></li>
                 <li><a href="categories">Categories</a></li>
-              </ul>
+            </ul>
         </div>
 
-        <h1 class="title">JustStreamIt</h1>
+
 
         <section id="best_movie">
+
+            <button id="modal-btn"></button>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <p></p>
+                    </div>
+                </div>
+
         </section>
 
         <section id=most_rated_movies>
+            <div class="wrapper">
+
+                <section id="section1">
+                  <a href="#section2" class="arrow__btn left-arrow">‹</a>
+                  <div class="item">
+                    <a href="#">
+                      <img
+                        src="1.jpeg"
+                        alt="Describe Image">
+                    </a>
+                  </div>
+
+
+                  <a href="#section2" class="arrow__btn right-arrow">›</a>
+                </section>
+
+                <section id="section2">
+                  <a href="#section1" class="arrow__btn left-arrow">‹</a>
+                  <div class="item">
+                    <img
+                      src="2.jpeg"
+                      alt="Describe Image">
+                  </div>
+
+                  <a href="#section1" class="arrow__btn right-arrow">›</a>
+                </section>
+
+            </div>
         </section>
 
         <section id=cat_1>
