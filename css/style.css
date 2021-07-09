@@ -2,6 +2,7 @@ body {
   box-sizing: border-box;
   background: black;
   color: white;
+  overflow: scroll;
 }
 
 .section {
@@ -11,7 +12,7 @@ body {
   padding: 5px;
 }
 
-.title {
+#title {
   color: #db1b1b;
 }
 
@@ -47,6 +48,7 @@ li a:hover {
   height: 100%;
   background-color: black;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
 }
 .modal-content {
   position: relative;
@@ -67,19 +69,45 @@ li a:hover {
 }
 
 .slider {
-  width: 300px;
-  height: 300px;
+  position: relative;
+  width: 1200px;
+  margin: auto;
   display: flex;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x mandatory;
+  align-items: center;
 }
 
 .slide {
-  width: 300px;
-  flex-shrink: 0;
-  height: 100%;
-  scroll-snap-align: start;
+  position: relative;
+  display: block;
+  flex: 1 1 0px;
+}
+.slide img {
+  display: block;
+  max-width: 100%;
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 /*# sourceMappingURL=style.css.map */

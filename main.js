@@ -8,7 +8,7 @@ function modal(info) {
 
     modalContent.innerHTML =
         `
-            <img class="modal-img" src="${info.image_url}" />
+            <img class="modal-img" src="${info.image_url}" alt="" />
             <p>title: ${info.title}</p>
             <p>genre: ${info.genres}</p>
             <p>released: ${info.date_published}</p>
@@ -35,6 +35,14 @@ function modal(info) {
     }
 }
 
+async function detailMovie(movieInfo) {
+    let moviesDetails = new Array
+    let getDetailMovieRes = await fetch(`${movieInfo.url}`)
+    let getDetailMovieData = await getDetailMovieRes.json()
+    moviesDetails.push(getDetailMovieData)
+    return moviesDetails
+}
+
 async function bestMovie() {
     let getBestMoviesResponse = await fetch(`${base_url}?sort_by=-imdb_score`)
     let getBestMoviesData = await getBestMoviesResponse.json()
@@ -58,33 +66,87 @@ async function bestMovie() {
     }
 }
 
-function carrousel(moviesInfo) {
+function createModalButton(selector, imageInfo) {
+    selector
+    .innerHTML +=
+    `
+    <button class="modal-btn">
+        <img class="modal-img" src="${imageInfo.image_url}" alt="" />
+    </button>
+
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <p></p>
+        </div>
+    </div>
+    `
+    for (let btn of selector.children) {
+        // console.log(btn)
+        btn.onclick = function() {
+            modal(detailMovie(imageInfo))
+        }
+
+    }
+    // selector.children.onclick = function() {
+    //     modal(detailMovie(imageInfo))
+    // }
+}
+
+function getMoviesImages(moviesInfo) {
     let images = new Array
-    // let firstSection = document.querySelector("#most_rated_movies .wrapper #section1 .item")
-    // let firstSection = document.getElementById("most_rated_movies")
-    let firstSection = document.querySelector("#most_rated_movies .slider")
 
     for (const movie of moviesInfo) {
         images.push(movie.image_url)
     }
+    return images
+}
 
-    for (let image of images) {
-        firstSection
-        .innerHTML += `
-            <div class="slide">
-                <img src="${image}" />
-            </div>
-        `
+function carrousel(moviesImages, id) {
+    let firstSection = document.querySelector(`#${id} .slider`)
+
+    for (let image of moviesImages) {
+        createModalButton(firstSection, image)
     }
 }
 
-async function mostRatedMovies() {
+function next(moviesImages) {
+    let restElement = moviesImages.slice(1)
+    let firstElement = moviesImages.slice(0,1)[0]
+
+    restElement.push(firstElement)
+
+    carrousel(restElement, "most_rated_movies")
+}
+
+function previous(moviesImages) {
+
+}
+
+function addCategoryName(genre, id) {
+    let cat = document.getElementById(id)
+
+    if (genre !== "undefined") {
+        cat.innerHTML += `<h1>${genre}</h1>`
+    } else {
+        cat.innerHTML += `<h1>best movies</h1>`
+    }
+}
+
+async function categoryMovies(genre, id) {
+    addCategoryName(genre, id)
+
     let movies = new Array
     for (let i = 1; movies.length * 5 < 7; i++) {
-        let getRatedMoviesRes = await fetch(`${base_url}?page=${i}&sort_by=-avg_vote`)
-        let getRatedMoviesData = await getRatedMoviesRes.json()
+        if (genre === "undefined") {
+            var moviesRes = await fetch(`${base_url}?page=${i}&sort_by=-avg_vote`)
+        } else {
+            var moviesRes = await fetch(`${base_url}?page=${i}&sort_by=-avg_vote&genre=${genre}`)
+        }
+        let moviesData = await moviesRes.json()
 
-        let request = getRatedMoviesData
+
+        let request = moviesData
 
         movies.push(request.results)
 
@@ -92,8 +154,35 @@ async function mostRatedMovies() {
     let moviesInfo = movies.flat()
     let carrouselMovies = moviesInfo.slice(3)
 
-    carrousel(carrouselMovies)
+    carrousel(carrouselMovies, id)
+
+    var imageArray = new Array
+    for (const movie of moviesInfo) {
+        imageArray.push(movie.image_url)
+    }
+
+    document
+    .querySelector(`#${id} .slider`)
+    .innerHTML +=
+    `
+    <a class="prev">&#10094;</a>
+    <a class="next">&#10095;</a>
+    `
+    // const btnPrev = document.querySelector(".prev")
+    // const btnNext = document.querySelector(".next")
+
+    // btnPrev.addEventListener("click", function () {
+    //     console.log("hello")
+    // })
+
+}
+
+function changeSlide() {
+    categoryMovies("action", "cat_1")
 }
 
 bestMovie()
-mostRatedMovies()
+categoryMovies("undefined","most_rated_movies")
+categoryMovies("action", "cat_1")
+categoryMovies("horror", "cat_2")
+categoryMovies("animation", "cat_3")
