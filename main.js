@@ -1,7 +1,10 @@
-var base_url = "http://127.0.0.1:8000/api/v1/titles"
+const base_url = "http://127.0.0.1:8000/api/v1/titles"
+// const modals = document.querySelectorAll(".modal-btn")
 
 function modal(info) {
-    let modalBtn = document.getElementById("modal-btn")
+
+    // let btn = document.getElementById(`${info.id}`)
+    // let btn = document.querySelectorAll(".modal-btn")
     let modal = document.querySelector(".modal")
     let closeBtn = document.querySelector(".close-btn")
     let modalContent = document.querySelector(".modal-content p")
@@ -22,9 +25,16 @@ function modal(info) {
             <p>plot: ${info.long_description}</p>
         `
 
-    modalBtn.onclick = function(){
-        modal.style.display = "block"
-    }
+    // btn.onclick = function() {
+    modal.style.display = "block"
+    // }
+    // btn.onclick = function() {
+    //     modal.style.display = "block"
+    // }
+
+    // modal.style.display = "block"
+    // console.log(btn)
+
     closeBtn.onclick = function(){
         modal.style.display = "none"
     }
@@ -36,18 +46,16 @@ function modal(info) {
 }
 
 async function detailMovie(movieInfo) {
-    let moviesDetails = new Array
     let getDetailMovieRes = await fetch(`${movieInfo.url}`)
     let getDetailMovieData = await getDetailMovieRes.json()
-    moviesDetails.push(getDetailMovieData)
-    return moviesDetails
+    return getDetailMovieData
 }
 
 async function bestMovie() {
     let getBestMoviesResponse = await fetch(`${base_url}?sort_by=-imdb_score`)
     let getBestMoviesData = await getBestMoviesResponse.json()
 
-    let modalBtn = document.getElementById("modal-btn")
+    let modalBtn = document.querySelector(".modal-btn")
 
     modalBtn
     .innerHTML =
@@ -56,7 +64,7 @@ async function bestMovie() {
             <p>${getBestMoviesData.results[0].title}</p>
         `
 
-    let best_movie = document.getElementById('best_movie')
+    let best_movie = document.getElementById("bm_id")
 
     let getDetailMovieRes = await fetch(`${base_url}/${getBestMoviesData.results[0].id}`)
     let getDetailMovieData = await getDetailMovieRes.json()
@@ -66,32 +74,34 @@ async function bestMovie() {
     }
 }
 
+
+
+
 function createModalButton(selector, imageInfo) {
+
     selector
     .innerHTML +=
     `
-    <button class="modal-btn">
+    <button class="modal-btn" id="btn_${imageInfo.id}">
         <img class="modal-img" src="${imageInfo.image_url}" alt="" />
     </button>
-
-    <div class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <p></p>
-        </div>
-    </div>
     `
-    for (let btn of selector.children) {
-        // console.log(btn)
-        btn.onclick = function() {
-            modal(detailMovie(imageInfo))
-        }
 
+    var myEl = document.getElementById(`btn_${imageInfo.id}`)
+
+    myEl.onclick = async function() {
+        let res = await detailMovie(imageInfo)
+        modal(res)
     }
-    // selector.children.onclick = function() {
-    //     modal(detailMovie(imageInfo))
+    console.log(myEl.onclick)
+
+
+    // selector.onclick = async function() {
+    //     let res = await detailMovie(imageInfo)
+    //     modal(res)
     // }
 }
+
 
 function getMoviesImages(moviesInfo) {
     let images = new Array
@@ -111,31 +121,26 @@ function carrousel(moviesImages, id) {
 }
 
 function next(moviesImages) {
-    let restElement = moviesImages.slice(1)
-    let firstElement = moviesImages.slice(0,1)[0]
-
-    restElement.push(firstElement)
-
-    carrousel(restElement, "most_rated_movies")
+    let lastElement = moviesImages.slice(-1)[0]
+    moviesImages.unshift(lastElement)
+    return moviesImages.slice(0,7)
 }
 
 function previous(moviesImages) {
-
+    return moviesImages.slice(1).concat(moviesImages.slice(0,1))
 }
 
 function addCategoryName(genre, id) {
-    let cat = document.getElementById(id)
+    let cat = document.querySelector(`#${id} .category_name`)
 
     if (genre !== "undefined") {
-        cat.innerHTML += `<h1>${genre}</h1>`
+        cat.innerText += `${genre}`
     } else {
-        cat.innerHTML += `<h1>best movies</h1>`
+        cat.innerText += `best movies`
     }
 }
 
-async function categoryMovies(genre, id) {
-    addCategoryName(genre, id)
-
+async function getData(genre, best_movie=false) {
     let movies = new Array
     for (let i = 1; movies.length * 5 < 7; i++) {
         if (genre === "undefined") {
@@ -144,41 +149,55 @@ async function categoryMovies(genre, id) {
             var moviesRes = await fetch(`${base_url}?page=${i}&sort_by=-avg_vote&genre=${genre}`)
         }
         let moviesData = await moviesRes.json()
-
-
         let request = moviesData
 
         movies.push(request.results)
-
     }
     let moviesInfo = movies.flat()
     let carrouselMovies = moviesInfo.slice(3)
 
-    carrousel(carrouselMovies, id)
+    return carrouselMovies
+}
 
-    var imageArray = new Array
-    for (const movie of moviesInfo) {
-        imageArray.push(movie.image_url)
-    }
-
+function addArrows(genre, id) {
     document
     .querySelector(`#${id} .slider`)
     .innerHTML +=
     `
-    <a class="prev">&#10094;</a>
-    <a class="next">&#10095;</a>
+    <a id="prev_${genre}" class="prev">&#10094;</a>
+    <a id="next_${genre}" class="next">&#10095;</a>
     `
-    // const btnPrev = document.querySelector(".prev")
+}
+
+
+async function categoryMovies(genre, id) {
+    addCategoryName(genre, id)
+
+    let dataMovies = await getData(genre)
+
+    carrousel(dataMovies, id)
+
+    // addArrows(genre, id)
+
+    // next(dataMovies)
+
+    // const btnPrev = document.getElementById(".prev")
     // const btnNext = document.querySelector(".next")
+
+    // for (let movieInfo of dataMovies) {
+    //     modal(movieInfo)
+    // }
+
+    // btnNext.addEventListener("click", function() {
+        // let modal = document.querySelector(".modal")
+    // })
+
+    // modal(dataMovies)
 
     // btnPrev.addEventListener("click", function () {
     //     console.log("hello")
     // })
 
-}
-
-function changeSlide() {
-    categoryMovies("action", "cat_1")
 }
 
 bestMovie()
