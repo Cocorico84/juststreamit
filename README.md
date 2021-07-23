@@ -1,6 +1,6 @@
 # Description
 
-JustStreamIt is a platform to display informations about movies. For each movie, you see details (actors, directors, year of release, income, critics and imdb score).
+JustStreamIt is a platform to display informations about movies. For each movie, you see details (actors, directors, year of release, income, critics and imdb score...).
 
 In this program, you can change which genres and how many movies you want to display.
 
@@ -39,6 +39,7 @@ If you want to change the CSS file, first step is to install [nodejs](https://no
 ```
 npm run sass
 ```
+It is not mandatory because you can write in the CSS file
 
 # Contributor
 
