@@ -46,23 +46,24 @@ async function bestMovie() {
 
     let bestMovie = document.getElementById("bm_id")
 
-    bestMovie
-    .innerHTML =
-        `
-            <img class="modal-img" src="${getBestMoviesData.results[0].image_url}" />
-            <p>${getBestMoviesData.results[0].title}</p>
-        `
-
     let getDetailMovieRes = await fetch(`${base_url}/${getBestMoviesData.results[0].id}`)
     let getDetailMovieData = await getDetailMovieRes.json()
 
-    bestMovie.onclick = function() {
+    bestMovie
+    .innerHTML +=
+        `
+            <img class="modal-img" src="${getBestMoviesData.results[0].image_url}" />
+            <button id="btn_modal_bm">Info</button>
+            <p>${getBestMoviesData.results[0].title}</p>
+            <p>${getDetailMovieData.long_description}</p>
+        `
+
+        document.getElementById("btn_modal_bm").onclick = function() {
         createModal(getDetailMovieData)
     }
 }
 
 function createModalButton(selector, imageInfo) {
-
     selector
     .innerHTML +=
     `
