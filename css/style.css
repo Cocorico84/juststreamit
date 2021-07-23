@@ -77,7 +77,6 @@ li a:hover {
 
 .slider {
   position: relative;
-  width: relative;
   justify-content: center;
   margin: auto;
   display: flex;
@@ -94,7 +93,8 @@ li a:hover {
   max-width: 100%;
 }
 
-.prev, .next {
+.prev,
+.next {
   cursor: pointer;
   position: relative;
   top: 50%;
@@ -114,7 +114,8 @@ li a:hover {
   border-radius: 3px 0 0 3px;
 }
 
-.prev:hover, .next:hover {
+.prev:hover,
+.next:hover {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
