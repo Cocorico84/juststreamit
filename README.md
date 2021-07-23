@@ -1,6 +1,8 @@
 # Description
 
-JustStreamIt is a platform to display informations about movies.
+JustStreamIt is a platform to display informations about movies. For each movie, you see details (actors, directors, year of release, income, critics and imdb score).
+
+In this program, you can change which genres and how many movies you want to display.
 
 # Prerequisites
 
@@ -25,10 +27,18 @@ pip install -r requirements.txt
 
 # Quickstart
 
+To get the API, you need to clone the [repo](https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR) and run it
+
 ```console
 python manage.py runserver
 ```
 When you launch this command, it will start the OCMovies API. It contains all movies in a database.
+
+If you want to change the CSS file, first step is to install [nodejs](https://nodejs.org/en/) and then you can write in the SCSS file just after running npm.
+
+```
+npm run sass
+```
 
 # Contributor
 
